@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barrows Connected Store — Retailer Questionnaire</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23007C85'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-weight='bold' font-size='18' fill='white'>B</text></svg>">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0A0A14;color:#fff;min-height:100vh}
+.hdr{background:#0A0A14;border-bottom:1px solid rgba(255,255,255,0.08);padding:0 2rem;position:sticky;top:0;z-index:100}
+.hdr-in{max-width:900px;margin:0 auto;height:58px;display:flex;align-items:center}
+.wm{display:flex;align-items:center;gap:10px}
+.wm-dot{width:30px;height:30px;background:#007C85;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0}
+.wm-name{font-size:13px;font-weight:600;color:#fff;letter-spacing:.05em;text-transform:uppercase}
+.wm-sub{font-size:11px;color:rgba(255,255,255,0.35)}
+.prog-wrap{background:#0D0D1A;border-bottom:1px solid rgba(255,255,255,0.05);padding:0 2rem}
+.prog-in{max-width:900px;margin:0 auto;padding:14px 0 10px}
+.prog-bar{height:2px;background:rgba(255,255,255,0.07);border-radius:2px;margin-bottom:10px}
+.prog-fill{height:2px;background:linear-gradient(90deg,#007C85,#4ECDC4);border-radius:2px;transition:width .4s}
+.prog-steps{display:flex}
+.prog-step{flex:1;font-size:11px;color:rgba(255,255,255,0.25);text-align:center}
+.prog-step.done{color:rgba(255,255,255,0.4)}
+.prog-step.act{color:#4ECDC4;font-weight:600}
+.shell{max-width:900px;margin:0 auto;padding:2.5rem 2rem 5rem}
+.step{display:none}.step.active{display:block}
+.hero{margin-bottom:2rem}
+.eyebrow{font-size:11px;font-weight:600;color:#007C85;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
+.htitle{font-size:28px;font-weight:700;color:#fff;margin-bottom:8px}
+.hsub{font-size:15px;color:rgba(255,255,255,0.45);line-height:1.6}
+.card{background:rgba(255,255,255,0.035);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.5rem;margin-bottom:14px}
+.fl{margin-bottom:22px}.fl:last-child{margin-bottom:0}
+.flbl{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px}
+.fhint{font-size:12px;color:rgba(255,255,255,0.38);margin-bottom:8px;line-height:1.5}
+input[type=text]{width:100%;padding:11px 14px;font-size:14px;border:1px solid rgba(255,255,255,0.1);border-radius:10px;background:rgba(255,255,255,0.05);color:#fff;outline:none;font-family:inherit}
+input[type=text]::placeholder{color:rgba(255,255,255,0.2)}
+input[type=text]:focus{border-color:#007C85}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.pill{padding:8px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:24px;font-size:13px;color:rgba(255,255,255,0.55);cursor:pointer;background:transparent;transition:all .15s;user-select:none}
+.pill:hover{border-color:rgba(0,124,133,0.5);color:#4ECDC4;background:rgba(0,124,133,0.08)}
+.pill.on{background:#007C85;border-color:#007C85;color:#fff;font-weight:600}
+.counter{background:rgba(0,124,133,0.08);border:1px solid rgba(0,124,133,0.25);border-radius:12px;padding:14px 18px;margin-top:18px;display:none;gap:2.5rem;flex-wrap:wrap;align-items:center}
+.ci{font-size:13px;color:rgba(255,255,255,0.4)}.ci strong{font-size:24px;font-weight:700;color:#4ECDC4;display:block;line-height:1.1}
+.ctags{font-size:12px;color:rgba(255,255,255,0.35);flex:1;line-height:2}
+.ctag{display:inline-block;background:rgba(0,124,133,0.2);color:#4ECDC4;padding:2px 10px;border-radius:10px;margin:2px 4px 2px 0;font-weight:600;font-size:11px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem}
+.btn{padding:10px 20px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:transparent;color:rgba(255,255,255,0.6);font-size:14px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .15s;font-family:inherit}
+.btn:hover{background:rgba(255,255,255,0.06);color:#fff}
+.btnp{background:#007C85;border-color:#007C85;color:#fff}.btnp:hover{background:#009AA5;border-color:#009AA5}
+.btncsv{background:rgba(27,60,139,0.4);border-color:rgba(100,149,237,0.4);color:#90B8F8}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:2rem}
+.guidance{background:rgba(0,124,133,0.07);border:1px solid rgba(0,124,133,0.2);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:16px}
+.g-title{font-size:12px;font-weight:600;color:#4ECDC4;margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em}
+.g-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g-item{background:rgba(255,255,255,0.03);border-radius:8px;padding:10px 12px;border:1px solid rgba(255,255,255,0.05)}
+.g-item-title{font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);margin-bottom:3px}
+.g-item-text{font-size:12px;color:rgba(255,255,255,0.38);line-height:1.55}
+.sbar{background:rgba(0,124,133,0.08);border:1px solid rgba(0,124,133,0.2);border-radius:12px;padding:1rem 1.25rem;margin-bottom:16px;display:flex;gap:2rem;flex-wrap:wrap;align-items:center}
+.si{font-size:13px;color:rgba(255,255,255,0.4)}.si strong{font-size:20px;font-weight:700;color:#4ECDC4;display:block}
+.shdr{font-size:11px;font-weight:700;letter-spacing:.08em;color:#4ECDC4;text-transform:uppercase;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:12px;display:flex;justify-content:space-between}
+.shdr span{font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:0;text-transform:none;font-weight:400}
+.qi{padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:opacity .2s}
+.qi:last-child{border-bottom:none}
+.qi-top{display:flex;gap:10px;align-items:flex-start}
+.qn{font-size:12px;font-weight:600;color:#007C85;width:24px;flex-shrink:0;padding-top:3px}
+.qb{flex:1}
+.qt{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.6;border:none;background:transparent;width:100%;resize:vertical;outline:none;font-family:inherit;min-height:44px}
+.qt:focus{background:rgba(255,255,255,0.04);border-radius:6px;padding:6px;margin:-6px}
+.qm{font-size:11px;margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.qgate{background:rgba(0,124,133,0.2);color:#4ECDC4;padding:2px 8px;border-radius:8px;font-weight:600;font-size:11px}
+.qsrc{padding:2px 8px;border-radius:8px;font-weight:600;font-size:10px}
+.s-always{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.35)}
+.s-vert{background:rgba(192,24,90,0.18);color:#F48FB1}
+.s-geo{background:rgba(40,53,147,0.3);color:#90CAF9}
+.s-scale{background:rgba(183,83,9,0.25);color:#FFCC80}
+.s-screen{background:rgba(13,107,94,0.25);color:#80CBC4}
+.s-rmn{background:rgba(74,26,107,0.25);color:#CE93D8}
+.s-stage{background:rgba(0,124,133,0.2);color:#4ECDC4}
+.s-sensor{background:rgba(139,96,16,0.3);color:#FFD54F}
+.s-meas{background:rgba(21,101,192,0.3);color:#90CAF9}
+.s-data{background:rgba(46,125,50,0.3);color:#A5D6A7}
+.qcrit{color:#EF9A9A;font-size:11px}
+.qrm{flex-shrink:0;width:28px;height:28px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,0.15);font-size:20px;line-height:1;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.qrm:hover{background:rgba(239,83,80,0.15);color:#EF5350}
+.qi-extra{margin-top:10px;margin-left:34px}
+.qi-field label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.25);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.qi-field select{padding:7px 10px;font-size:13px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);font-family:inherit;outline:none;cursor:pointer;max-width:320px;width:100%}
+.qi-field select option{background:#1a1a2e;color:#fff}
+.addrow{padding:10px 0 0;display:flex;gap:8px}
+.addinp{flex:1;padding:8px 14px;font-size:13px;border:1px dashed rgba(255,255,255,0.1);border-radius:8px;background:transparent;color:rgba(255,255,255,0.5);outline:none;font-family:inherit}
+.addinp::placeholder{color:rgba(255,255,255,0.18)}
+.addinp:focus{border-color:rgba(0,124,133,0.5);background:rgba(0,124,133,0.05);color:#fff;border-style:solid}
+.expwrap{background:#fff;border-radius:14px;padding:2.5rem;margin-bottom:1rem;color:#1a1a1a}
+.exp-logo{font-size:11px;font-weight:700;color:#007C85;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.exp-title{font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.exp-sub{font-size:13px;color:#666}
+.exp-div{height:3px;background:#007C85;border-radius:2px;margin:16px 0 20px}
+.exp-intro{font-size:13px;color:#444;line-height:1.75;padding:14px 16px;background:#f0faf8;border-radius:8px;border-left:4px solid #007C85;margin-bottom:24px}
+.exp-sec{font-size:11px;font-weight:700;color:#007C85;letter-spacing:.08em;text-transform:uppercase;margin:20px 0 10px;padding-bottom:7px;border-bottom:1px solid #e5e5e5}
+.exp-q{display:flex;gap:12px;margin-bottom:14px;font-size:13px;line-height:1.65;color:#1a1a1a}
+.exp-qn{font-weight:700;color:#007C85;flex-shrink:0;width:22px}
+.exp-ans{margin-top:8px;height:32px;border-bottom:1px solid #ddd}
+.exp-ref{margin-top:28px;padding-top:20px;border-top:1px solid #eee}
+.exp-ref-title{font-size:11px;color:#bbb;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.exp-ref-q{display:flex;gap:8px;margin-bottom:8px;font-size:12px;color:#aaa;line-height:1.5;align-items:flex-start}
+.exp-ref-badge{font-size:10px;background:#e0f4f5;color:#007C85;padding:2px 8px;border-radius:6px;font-weight:600;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.footer{text-align:center;padding:2rem 0 4rem;font-size:11px;color:rgba(255,255,255,0.15);letter-spacing:.06em;text-transform:uppercase}
+@media(max-width:600px){.g-grid{grid-template-columns:1fr}.shell{padding:1.5rem 1rem 4rem}}
+@media print{body{background:#fff}.hdr,.prog-wrap,.nav,.btnrow,.guidance,.footer{display:none!important}.shell{padding:0}.expwrap{border-radius:0;padding:1rem}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-in">
+    <div class="wm">
+      <div class="wm-dot">B</div>
+      <div>
+        <div class="wm-name">Barrows Connected Store</div>
+        <div class="wm-sub">Retailer Onboarding System</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-in">
+    <div class="prog-bar"><div class="prog-fill" id="prog" style="width:33%"></div></div>
+    <div class="prog-steps">
+      <div class="prog-step act" id="ps1">1. Retailer profile</div>
+      <div class="prog-step" id="ps2">2. Review &amp; edit</div>
+      <div class="prog-step" id="ps3">3. Export</div>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+<div class="step active" id="s-profile">
+  <div class="hero">
+    <div class="eyebrow">Step 1 of 3</div>
+    <div class="htitle">Retailer profile</div>
+    <div class="hsub">Fill in what you know — the question count updates live as you select</div>
+  </div>
+  <div class="card">
+    <div class="fl">
+      <div class="flbl">Retailer name</div>
+      <input type="text" id="p-name" placeholder="e.g. BP, Aldi UK, JLP">
+    </div>
+    <div class="fl">
+      <div class="flbl">Vertical</div>
+      <div class="fhint">Drives sector-specific questions — forecourt safety, brand density, loyalty data, EV infrastructure</div>
+      <div class="pills" data-key="vertical">
+        <div class="pill" data-val="grocery">Grocery</div>
+        <div class="pill" data-val="fuel">Fuel / Convenience</div>
+        <div class="pill" data-val="diy">DIY / Home</div>
+        <div class="pill" data-val="health">Health / Pharmacy</div>
+        <div class="pill" data-val="apparel">Apparel</div>
+        <div class="pill" data-val="other">Other</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Geography</div>
+      <div class="fhint">Drives regulatory questions — GDPR/DMA for UK, CCPA for US, different device certification processes</div>
+      <div class="pills" data-key="geo">
+        <div class="pill" data-val="uk">UK</div>
+        <div class="pill" data-val="us">US</div>
+        <div class="pill" data-val="sa">South Africa</div>
+        <div class="pill" data-val="eu">Europe</div>
+        <div class="pill" data-val="multi">Multi-region</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Store count</div>
+      <div class="fhint">Drives scale questions — phased rollout, freight logistics, board-level commitment thresholds</div>
+      <div class="pills" data-key="scale">
+        <div class="pill" data-val="small">Under 100</div>
+        <div class="pill" data-val="mid">100–500</div>
+        <div class="pill" data-val="large">500–1,500</div>
+        <div class="pill" data-val="xlarge">1,500+</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Existing digital screens?</div>
+      <div class="fhint">Centrally managed = CMS migration + API questions · None = physical infrastructure questions</div>
+      <div class="pills" data-key="screens">
+        <div class="pill" data-val="central">Yes — centrally managed</div>
+        <div class="pill" data-val="local">Yes — locally managed</div>
+        <div class="pill" data-val="partial">Partial / some sites</div>
+        <div class="pill" data-val="none">No screens yet</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Existing retail media network (RMN)?</div>
+      <div class="fhint">None = media sales capability questions · Live = rate card + attribution questions</div>
+      <div class="pills" data-key="rmn">
+        <div class="pill" data-val="live">Live and scaled</div>
+        <div class="pill" data-val="forming">In development</div>
+        <div class="pill" data-val="exploring">Exploring only</div>
+        <div class="pill" data-val="none">None</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Stage of engagement</div>
+      <div class="fhint">Biggest driver · Pre = ~10 discovery questions · Early = ~20 · Active programme = 30–40 full intake</div>
+      <div class="pills" data-key="stage">
+        <div class="pill" data-val="pre">Pre-engagement</div>
+        <div class="pill" data-val="early">Early engagement</div>
+        <div class="pill" data-val="active">Active programme</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Sensor appetite</div>
+      <div class="fhint">Drives privacy, hardware approval and data questions — cameras need different sign-offs to BLE</div>
+      <div class="pills" data-key="sensor">
+        <div class="pill" data-val="sensor-all">All sensors welcome</div>
+        <div class="pill" data-val="sensor-ble-cam">BLE and camera only</div>
+        <div class="pill" data-val="sensor-ble">BLE only</div>
+        <div class="pill" data-val="sensor-pop">Proof of play only</div>
+        <div class="pill" data-val="sensor-tbd">Not decided yet</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Measurement ambition</div>
+      <div class="fhint">Drives data requirements — sales uplift needs EPOS feeds; proof of play needs nothing from the retailer</div>
+      <div class="pills" data-key="meas">
+        <div class="pill" data-val="meas-sales">Sales uplift (full)</div>
+        <div class="pill" data-val="meas-audience">Audience + engagement</div>
+        <div class="pill" data-val="meas-pop">Proof of play only</div>
+        <div class="pill" data-val="meas-tbd">Not decided yet</div>
+      </div>
+    </div>
+    <div class="fl">
+      <div class="flbl">Sales data availability</div>
+      <div class="fhint">Drives how we ask about EPOS — an automated feed needs different questions to manual extracts or no data at all</div>
+      <div class="pills" data-key="salesdata">
+        <div class="pill" data-val="data-auto">Automated feed exists</div>
+        <div class="pill" data-val="data-manual">Manual extracts only</div>
+        <div class="pill" data-val="data-limited">Limited</div>
+        <div class="pill" data-val="data-none">None</div>
+        <div class="pill" data-val="data-tbd">Not decided yet</div>
+      </div>
+    </div>
+    <div class="counter" id="counter">
+      <div class="ci"><strong id="c-count">0</strong>questions</div>
+      <div class="ci"><strong id="c-crit">0</strong>critical</div>
+      <div class="ci"><strong id="c-sec">0</strong>sections</div>
+      <div class="ctags" id="c-tags"></div>
+    </div>
+  </div>
+  <div class="nav">
+    <span></span>
+    <button class="btn btnp" id="btn-generate">Generate questions →</button>
+  </div>
+</div>
+
+<div class="step" id="s-review">
+  <div class="hero">
+    <div class="eyebrow">Step 2 of 3</div>
+    <div class="htitle">Review &amp; edit</div>
+    <div class="hsub">Each question shows why it was included. Edit inline, mark what you know, remove anything irrelevant.</div>
+  </div>
+  <div class="guidance">
+    <div class="g-title">What to do with responses when they come back</div>
+    <div class="g-grid">
+      <div class="g-item"><div class="g-item-title">Gate 1 responses</div><div class="g-item-text">Confirm sponsor and programme owner. Add to Programme Directory. Steerco cannot proceed without named contacts on both sides.</div></div>
+      <div class="g-item"><div class="g-item-title">Gate 2 responses</div><div class="g-item-text">DPIA, CAPEX, hardware approval, IT security. Any unanswered Gate 2 critical is a blocker. Start DPIA and hardware approval before contracts are signed.</div></div>
+      <div class="g-item"><div class="g-item-title">Gate 3 responses</div><div class="g-item-text">SLAs, installation access, contractor approval. All must be resolved before pilot launches. Do not go live without signed SLAs.</div></div>
+      <div class="g-item"><div class="g-item-title">Gate 4 responses</div><div class="g-item-text">Media sales capability and brand commitments. Secure at least one confirmed Day-1 brand before go-live.</div></div>
+      <div class="g-item"><div class="g-item-title">Sensor responses</div><div class="g-item-text">Camera acceptance unlocks age/gender and zone data. BLE acceptance unlocks verified impressions. Each sensor needs separate privacy and hardware sign-off.</div></div>
+      <div class="g-item"><div class="g-item-title">Data responses</div><div class="g-item-text">EPOS at SKU level unlocks sales uplift (Level 4–5). Share data granularity answer with Jonathan Stafford immediately to set measurement expectations.</div></div>
+    </div>
+  </div>
+  <div id="sbar"></div>
+  <div id="qlist"></div>
+  <div class="nav">
+    <button class="btn" id="btn-back1">← Back</button>
+    <button class="btn btnp" id="btn-toexport">Preview &amp; export →</button>
+  </div>
+</div>
+
+<div class="step" id="s-export">
+  <div class="hero">
+    <div class="eyebrow">Step 3 of 3</div>
+    <div class="htitle">Preview &amp; export</div>
+    <div class="hsub">Already-answered questions are excluded from the retailer version. Download as CSV for Excel or Google Sheets.</div>
+  </div>
+  <div id="expbody"></div>
+  <div class="btnrow">
+    <button class="btn" id="btn-back2">← Back &amp; edit</button>
+    <button class="btn btncsv" id="btn-csv">↓ Download for Excel (.csv)</button>
+    <button class="btn btnp" onclick="window.print()">🖨 Print / PDF</button>
+  </div>
+</div>
+
+</div>
+<div class="footer">Barrows Connected Store · Retailer Onboarding System</div>
+
+<script>
+var P = {name:'',vertical:'',geo:'',scale:'',screens:'',rmn:'',stage:'',sensor:'',meas:'',salesdata:''};
+var AQ = [];
+
+var SL = {
+  'always':'Always asked','grocery':'Grocery','fuel':'Fuel/convenience','diy':'DIY/Home',
+  'health':'Health/pharmacy','apparel':'Apparel','other':'Vertical','uk':'UK','us':'US',
+  'sa':'South Africa','eu':'Europe','multi':'Multi-region','small':'Under 100','mid':'100-500',
+  'large':'500-1500','xlarge':'1500+','screens-none':'No screens','screens-central':'Central CMS',
+  'screens-local':'Local screens','screens-partial':'Partial screens','rmn-none':'No RMN',
+  'rmn-exploring':'Exploring RMN','rmn-forming':'RMN forming','rmn-live':'Live RMN',
+  'pre':'Pre-engagement','early':'Early engagement','active':'Active programme',
+  'sensor-all':'All sensors','sensor-ble-cam':'BLE + camera','sensor-ble':'BLE only',
+  'sensor-pop':'Proof of play','sensor-tbd':'Sensor TBD',
+  'meas-sales':'Sales uplift','meas-audience':'Audience + engagement',
+  'meas-pop':'Proof of play','meas-tbd':'Measurement TBD',
+  'data-auto':'Automated feed','data-manual':'Manual extracts',
+  'data-limited':'Limited data','data-none':'No data','data-tbd':'Data TBD'
+};
+var SC = {
+  'always':'s-always','grocery':'s-vert','fuel':'s-vert','diy':'s-vert','health':'s-vert','apparel':'s-vert','other':'s-vert',
+  'uk':'s-geo','us':'s-geo','sa':'s-geo','eu':'s-geo','multi':'s-geo',
+  'small':'s-scale','mid':'s-scale','large':'s-scale','xlarge':'s-scale',
+  'screens-none':'s-screen','screens-central':'s-screen','screens-local':'s-screen','screens-partial':'s-screen',
+  'rmn-none':'s-rmn','rmn-exploring':'s-rmn','rmn-forming':'s-rmn','rmn-live':'s-rmn',
+  'pre':'s-stage','early':'s-stage','active':'s-stage',
+  'sensor-all':'s-sensor','sensor-ble-cam':'s-sensor','sensor-ble':'s-sensor','sensor-pop':'s-sensor','sensor-tbd':'s-sensor',
+  'meas-sales':'s-meas','meas-audience':'s-meas','meas-pop':'s-meas','meas-tbd':'s-meas',
+  'data-auto':'s-data','data-manual':'s-data','data-limited':'s-data','data-none':'s-data','data-tbd':'s-data'
+};
+
+var QB = [
+  // GOVERNANCE
+  {id:'g1',t:'Who is the main decision maker on your side — the person who can say yes and make things happen?',s:'Governance',g:'Gate 1',tags:['pre','early','active'],c:true},
+  {id:'g2',t:'Who will be running this day to day from your team?',s:'Governance',g:'Gate 1',tags:['early','active'],c:true},
+  {id:'g3',t:'How much can your day to day contacts sign off themselves, and when do things need to go up the chain?',s:'Governance',g:'Gate 1',tags:['active'],c:false},
+  {id:'g4',t:'How often do you want to catch up — weekly, fortnightly? And do you prefer calls or written updates?',s:'Governance',g:'Gate 1',tags:['active'],c:false},
+  {id:'g5',t:'Are you currently locked in with any tech vendors whose contracts might affect what we can do together?',s:'Governance',g:'Gate 2',tags:['active'],c:true},
+  {id:'g6',t:'What still needs sign-off internally before we can officially kick off?',s:'Governance',g:'Gate 1',tags:['active'],c:true},
+  {id:'g7',t:'At what point does this need to go to the board — is there a spend threshold or store count that triggers that?',s:'Governance',g:'Gate 2',tags:['large','xlarge'],c:false},
+
+  // NETWORK
+  {id:'n1',t:'How are your screens connected today — wifi, wired, 4G? Is it the same setup across all your sites?',s:'Network & connectivity',g:'Gate 2',tags:['early','active'],c:true},
+  {id:'n2',t:'Is there a process for getting new devices onto your network, or does everything go through IT approval?',s:'Network & connectivity',g:'Gate 2',tags:['active'],c:true},
+  {id:'n3',t:'Are there any firewall or security rules we need to know about before connecting an external platform?',s:'Network & connectivity',g:'Gate 2',tags:['active'],c:false},
+  {id:'n4',t:'Who on your IT team would we work with to get the technical integration reviewed and approved?',s:'Network & connectivity',g:'Gate 1',tags:['early','active'],c:true},
+  {id:'n5',t:'How long does IT typically take to approve a new external platform connection?',s:'Network & connectivity',g:'Gate 2',tags:['active'],c:false},
+  {id:'n6',t:'Are there any restrictions on electronics near the fuel pumps or EV chargers we should know about?',s:'Network & connectivity',g:'Gate 2',tags:['fuel'],c:true},
+
+  // DEVICE APPROVAL
+  {id:'d1',t:'What does the process look like for getting new hardware approved in your stores — is there a committee, and how often does it meet?',s:'Device & hardware approval',g:'Gate 2',tags:['early','active'],c:true},
+  {id:'d2',t:'What do you need from us to submit our hardware for approval — specs, certs, security docs?',s:'Device & hardware approval',g:'Gate 2',tags:['active'],c:true},
+  {id:'d3',t:'Once we submit, how long does approval usually take?',s:'Device & hardware approval',g:'Gate 2',tags:['active'],c:true},
+  {id:'d4',t:'Can we get the hardware approval process started before contracts are signed, or does it have to wait?',s:'Device & hardware approval',g:'Gate 2',tags:['active'],c:true},
+  {id:'d5',t:'Does your IT team do their own security review of new hardware, or is it more of a sign-off process?',s:'Device & hardware approval',g:'Gate 2',tags:['us','active'],c:true},
+  {id:'d6',t:'If our installation needs electrical work, does that become a full construction project on your side?',s:'Device & hardware approval',g:'Gate 2',tags:['fuel','active'],c:true},
+  {id:'d7',t:'Are any of your current screens coming up for replacement? Who owns that decision?',s:'Device & hardware approval',g:'Gate 2',tags:['fuel','early'],c:false},
+
+  // INSTALLATION
+  {id:'i1',t:'How much notice do you need to book an install window at a store, and who do we coordinate with?',s:'Installation & build',g:'Gate 3',tags:['active'],c:false},
+  {id:'i2',t:'Do you have preferred contractors for installs? Can we use our own team or would they need to be vetted first?',s:'Installation & build',g:'Gate 3',tags:['active'],c:false},
+  {id:'i3',t:'Do installs need to happen overnight, or is there flexibility on timing?',s:'Installation & build',g:'Gate 3',tags:['active'],c:false},
+  {id:'i4',t:'If we are replacing existing screens, who handles removing the old ones and who covers the cost?',s:'Installation & build',g:'Gate 2',tags:['active'],c:false},
+  {id:'i5',t:'For a rollout this size, would you want to start with a specific region or store type first?',s:'Installation & build',g:'Gate 3',tags:['large','xlarge','active'],c:false},
+  {id:'i6',t:'Any preferences on how hardware gets delivered — do you have distribution centres we should ship to?',s:'Installation & build',g:'Gate 2',tags:['large','xlarge','active'],c:false},
+  {id:'i7',t:'Who do we call if something goes wrong during an install, including outside business hours?',s:'Installation & build',g:'Gate 3',tags:['us','active'],c:true},
+  {id:'i8',t:'Have you looked at what power and mounting infrastructure your stores would need for screens?',s:'Installation & build',g:'Gate 2',tags:['screens-none'],c:false},
+
+  // DATA GOVERNANCE
+  {id:'da1',t:'Has anyone kicked off a data privacy review for this project yet? Do you have a named data protection contact we should loop in?',s:'Data governance',g:'Gate 2',tags:['early','active'],c:true},
+  {id:'da2',t:'Who on your side owns data sharing decisions, and do you have a standard agreement template you use?',s:'Data governance',g:'Gate 2',tags:['active'],c:true},
+  {id:'da3',t:'What level of sales data can you share with us — individual product level, category level, or more aggregated than that?',s:'Data governance',g:'Gate 2',tags:['early','active'],c:true},
+  {id:'da4',t:'Are there any UK GDPR or Digital Markets Act rules that would affect how we use customer data together?',s:'Data governance',g:'Gate 2',tags:['uk'],c:false},
+  {id:'da5',t:'What privacy rules apply to your customer data — CCPA or anything state-specific we should know about?',s:'Data governance',g:'Gate 2',tags:['us'],c:true},
+  {id:'da6',t:'Are you comfortable with passive Bluetooth measurement in your stores, or would that be a concern for your customers?',s:'Data governance',g:'Gate 3',tags:['uk','active'],c:false},
+  {id:'da7',t:'Do you have a loyalty scheme that tracks individual shopper purchases? Could that data be used to measure campaign impact?',s:'Data governance',g:'Gate 2',tags:['grocery','early'],c:true},
+
+  // COMMERCIAL
+  {id:'co1',t:'How do you see this working commercially — revenue share, a fixed fee, or something else?',s:'Commercial & SLA',g:'Gate 2',tags:['early','active'],c:true},
+  {id:'co2',t:'Who approves the budget for new hardware on your side, and is that money already set aside?',s:'Commercial & SLA',g:'Gate 2',tags:['early','active'],c:true},
+  {id:'co3',t:'What does good look like for you on uptime and response times if something goes wrong?',s:'Commercial & SLA',g:'Gate 3',tags:['active'],c:true},
+  {id:'co4',t:'Roughly what proportion of your range is your own brand versus national brands?',s:'Commercial & SLA',g:'Gate 2',tags:['grocery','pre','early'],c:false},
+
+  // CONTENT & CMS
+  {id:'cm1',t:'How does content get approved before it goes live on your screens today — who signs it off and how fast does that happen?',s:'Content & CMS',g:'Gate 3',tags:['active'],c:false},
+  {id:'cm2',t:'Are there any categories or types of content that would not work for your brand?',s:'Content & CMS',g:'Gate 3',tags:['active'],c:false},
+  {id:'cm3',t:'Who manages your screens at the moment and are you locked in with them, or is that open to change?',s:'Content & CMS',g:'Gate 2',tags:['screens-central','active'],c:true},
+  {id:'cm4',t:'Can your current screen system connect to external platforms via an API? Is there any documentation for that?',s:'Content & CMS',g:'Gate 2',tags:['screens-central','active'],c:true},
+  {id:'cm5',t:'Do you use single sign-on across your systems? Would you need our platform to plug into that?',s:'Content & CMS',g:'Gate 2',tags:['screens-central','active'],c:false},
+  {id:'cm6',t:'For your EV charger screens — who manages those and what system are they running on?',s:'Content & CMS',g:'Gate 2',tags:['fuel','early'],c:false},
+  {id:'cm7',t:'How do you manage content across your screens today — is it done centrally or does each site handle it?',s:'Content & CMS',g:'Gate 2',tags:['screens-local'],c:false},
+
+  // MEDIA SALES
+  {id:'ms1',t:'Who would be selling the ad space on your network — an internal team, an agency, or is that still to be decided?',s:'Media sales',g:'Gate 4',tags:['rmn-none','rmn-exploring','early'],c:true},
+  {id:'ms2',t:'Which brands do you have the strongest relationships with right now that might want to advertise on your screens?',s:'Media sales',g:'Gate 4',tags:['rmn-none','rmn-exploring','active'],c:false},
+  {id:'ms3',t:'Do you work with a media agency? Are they involved in thinking about retail media yet?',s:'Media sales',g:'Gate 4',tags:['rmn-none','rmn-exploring','active'],c:false},
+  {id:'ms4',t:'What are you charging advertisers for your screen inventory today, and how much of it is typically sold?',s:'Media sales',g:'Gate 2',tags:['rmn-live','rmn-forming'],c:false},
+  {id:'ms5',t:'What does the reporting look like for advertisers on your current network, and what do they wish was better?',s:'Media sales',g:'Gate 3',tags:['rmn-live','rmn-forming'],c:false},
+  {id:'ms6',t:'Which brand categories spend the most with you today, and has anyone brought up in-store advertising yet?',s:'Media sales',g:'Gate 4',tags:['grocery','pre','early'],c:false},
+  {id:'ms7',t:'Is there a team or process that signs off on new fixtures or screens going into your stores?',s:'Media sales',g:'Gate 1',tags:['grocery','early','active'],c:false},
+
+  // SENSOR QUESTIONS (new — from BP Analytics deck)
+  {id:'se1',t:'Are you open to anonymous camera sensors on the units? These profile who looks at the screen — age and gender — but never capture any personal data.',s:'Sensors & measurement',g:'Gate 2',tags:['sensor-tbd','sensor-all','sensor-ble-cam','early','active'],c:true},
+  {id:'se2',t:'Are you comfortable with passive Bluetooth sensors that count how many shoppers pass the screen? No personal data is ever captured — just device signals.',s:'Sensors & measurement',g:'Gate 2',tags:['sensor-tbd','sensor-all','sensor-ble-cam','sensor-ble','early','active'],c:true},
+  {id:'se3',t:'Would you be open to shelf interaction sensors (Lift and Learn) on the featured product range? They capture when a product is picked up but nothing about who did it.',s:'Sensors & measurement',g:'Gate 3',tags:['sensor-all','sensor-tbd','active'],c:false},
+  {id:'se4',t:'Who on your side would need to approve each sensor type — is that IT, Legal, or someone else?',s:'Sensors & measurement',g:'Gate 2',tags:['sensor-all','sensor-ble-cam','sensor-ble','sensor-tbd','active'],c:true},
+  {id:'se5',t:'We use only proof of play for campaigns where sensors are not available — is that an acceptable starting point while approvals are in progress?',s:'Sensors & measurement',g:'Gate 2',tags:['sensor-pop','sensor-tbd'],c:false},
+
+  // MEASUREMENT & DATA (new — from BP Analytics deck)
+  {id:'me1',t:'What does success look like for you at the end of this pilot — what number would make you want to roll it out further?',s:'Sensors & measurement',g:'Gate 1',tags:['pre','early','active'],c:true},
+  {id:'me2',t:'Are you aiming to prove a sales effect, or is understanding audience and engagement the priority for now?',s:'Sensors & measurement',g:'Gate 1',tags:['meas-tbd','pre','early'],c:true},
+  {id:'me3',t:'To measure a true sales uplift we need EPOS data by store, SKU and week going back 12 to 24 months. Is that something you could share?',s:'Sensors & measurement',g:'Gate 2',tags:['meas-sales','meas-tbd','early','active'],c:true},
+  {id:'me4',t:'Can you share a product and category hierarchy — which SKUs sit in which segments and categories? This helps us separate out brand versus category effects cleanly.',s:'Sensors & measurement',g:'Gate 2',tags:['meas-sales','meas-tbd','active'],c:true},
+  {id:'me5',t:'Do you have a way to send us data on a recurring basis — weekly or monthly — via SFTP, API or something similar? Or would it be more likely to be manual extracts?',s:'Sensors & measurement',g:'Gate 2',tags:['meas-sales','data-tbd','data-manual','data-limited','active'],c:true},
+  {id:'me6',t:'Could you share your promotional and pricing calendar? We need to flag concurrent promos so we do not accidentally credit campaign uplift to a price cut.',s:'Sensors & measurement',g:'Gate 2',tags:['meas-sales','data-auto','data-manual','active'],c:false},
+  {id:'me7',t:'Do you have planograms or a store zone map? Linking sensor data to fixture locations is what turns footfall numbers into a proper shopper journey story.',s:'Sensors & measurement',g:'Gate 3',tags:['meas-sales','meas-audience','sensor-all','sensor-ble-cam','active'],c:false},
+  {id:'me8',t:'Do you have category margin data you could share? It lets us convert a sales uplift number into a profit figure — the ROI metric that finance teams actually trust.',s:'Sensors & measurement',g:'Gate 3',tags:['meas-sales','active'],c:false},
+  {id:'me9',t:'If we cannot get a sales data feed in time for the pilot, we can use engagement metrics and Lift and Learn interactions as a proxy. Would that work as a starting point?',s:'Sensors & measurement',g:'Gate 2',tags:['data-none','data-limited','data-tbd','meas-tbd'],c:false},
+  {id:'me10',t:'For stores where we do not have camera coverage, we can model audience demographics from your loyalty card data or local census catchment profiles. Would either of those be available?',s:'Sensors & measurement',g:'Gate 2',tags:['sensor-ble','sensor-pop','sensor-tbd','grocery','active'],c:false},
+  {id:'me11',t:'For fuel retail, fuel price data is the single biggest external driver of forecourt traffic. Are you open to us incorporating that into the measurement model to keep the uplift reads clean?',s:'Sensors & measurement',g:'Gate 2',tags:['fuel','meas-sales','meas-tbd'],c:false},
+
+  // NETWORK & CONTENT OPERATIONS (from RFP library)
+  {id:'op1',t:'Do you have existing screen hardware or media players you need us to integrate with, or are you starting fresh?',s:'Content & CMS',g:'Gate 2',tags:['early','active','screens-central','screens-partial'],c:true},
+  {id:'op2',t:'How do you want content split between your own messaging and paid advertising — is there a rough split in mind, like 70/30 or 80/20?',s:'Content & CMS',g:'Gate 2',tags:['early','active'],c:false},
+  {id:'op3',t:'Do you want full central control over all screens, or should stores or regions be able to override content locally?',s:'Content & CMS',g:'Gate 2',tags:['active'],c:false},
+  {id:'op4',t:'Is silent video a requirement across all screens, or can some placements include audio?',s:'Content & CMS',g:'Gate 3',tags:['active'],c:false},
+  {id:'op5',t:'Are you interested in programmatic advertising — brands buying your screen inventory automatically via an ad platform — or would you prefer direct-sold only to start?',s:'Media sales',g:'Gate 4',tags:['rmn-none','rmn-exploring','rmn-forming','early','active'],c:false},
+  {id:'op6',t:'How often do you expect content to change — weekly, monthly, campaign by campaign? And do you need same-day or 24-hour turnaround for urgent updates?',s:'Content & CMS',g:'Gate 3',tags:['active'],c:false},
+
+  // VENDOR ONBOARDING & PROCUREMENT (from RFP library)
+  {id:'pr1',t:'Do you use a procurement platform like Ariba, Coupa or Workday for supplier onboarding? We want to make sure we are registered before the contract stage.',s:'Governance',g:'Gate 2',tags:['active','us'],c:false},
+  {id:'pr2',t:'What financial documentation do you need from us — company registration, D&B number, parent company structure, revenue confirmation?',s:'Governance',g:'Gate 2',tags:['early','active'],c:false},
+  {id:'pr3',t:'Do you need us to sign a specific NDA or supplier code of conduct before we can receive full RFP materials or access store data?',s:'Governance',g:'Gate 1',tags:['early','active'],c:false},
+
+  // SECURITY & COMPLIANCE (from RFP library — consistent ask across Home Depot, CVS, Albertsons, Walgreens)
+  {id:'sc1',t:'Does your IT or security team need to review our ISO 27001 certification and SOC 2 Type II attestation, or do you have a different security framework you work to?',s:'Network & connectivity',g:'Gate 2',tags:['active','us'],c:true},
+  {id:'sc2',t:'Do you have a formal IoT or OT security policy that any connected device must comply with? If so, who owns that process on your side?',s:'Network & connectivity',g:'Gate 2',tags:['active'],c:true},
+  {id:'sc3',t:'Are there specific requirements around how we handle patching and firmware updates on devices in your stores — do you need advance notice or a change control window?',s:'Network & connectivity',g:'Gate 2',tags:['active'],c:false},
+
+  // SCALE & PILOT STRUCTURE (from RFP library — Ulta, BJs, Ahold, Bass Pro)
+  {id:'pl1',t:'How many stores are you thinking for the pilot — is there a number in mind, or is that something you want us to recommend?',s:'Installation & build',g:'Gate 1',tags:['pre','early'],c:false},
+  {id:'pl2',t:'What would make this pilot a success in your eyes — is there a specific ROI, impression volume, or revenue number that would give you confidence to roll out?',s:'Sensors & measurement',g:'Gate 1',tags:['pre','early'],c:true},
+  {id:'pl3',t:'After the pilot, what is the rollout ambition — how many stores over what timeframe if it goes well?',s:'Governance',g:'Gate 1',tags:['pre','early'],c:false},
+
+  // EXPERIENCE & IMMERSIVE (from RFP library — Bass Pro, Ulta, JLP)
+  {id:'ex1',t:'Are you thinking standard screen placements, or are you interested in more immersive or interactive experiences — things like touch, product interaction, or personalised content?',s:'Content & CMS',g:'Gate 1',tags:['pre','early','apparel','health','diy'],c:false},
+  {id:'ex2',t:'Do you have a store design team or design standards panel that would need to sign off on how our hardware looks and fits into your store environment?',s:'Installation & build',g:'Gate 1',tags:['early','active','apparel','health','diy','grocery'],c:false}
+];
+
+function getTags() {
+  var t = [];
+  if (P.stage === 'pre') t.push('pre');
+  if (P.stage === 'early') { t.push('pre'); t.push('early'); }
+  if (P.stage === 'active') { t.push('pre'); t.push('early'); t.push('active'); }
+  if (P.vertical) t.push(P.vertical);
+  if (P.geo) t.push(P.geo);
+  if (P.scale === 'large') t.push('large');
+  if (P.scale === 'xlarge') { t.push('large'); t.push('xlarge'); }
+  if (P.screens) t.push('screens-' + P.screens);
+  if (P.rmn) t.push('rmn-' + P.rmn);
+  if (P.sensor) t.push(P.sensor);
+  if (P.meas) t.push(P.meas);
+  if (P.salesdata) t.push(P.salesdata);
+  return t;
+}
+
+function updateCounter() {
+  var tags = getTags();
+  if (!tags.length) { document.getElementById('counter').style.display = 'none'; return; }
+  var m = QB.filter(function(q) { return q.tags.some(function(t) { return tags.indexOf(t) >= 0; }); });
+  var secs = {};
+  m.forEach(function(q) { secs[q.s] = 1; });
+  document.getElementById('c-count').textContent = m.length;
+  document.getElementById('c-crit').textContent = m.filter(function(q) { return q.c; }).length;
+  document.getElementById('c-sec').textContent = Object.keys(secs).length;
+  var h = 'Active filters: ';
+  tags.forEach(function(t) { if (SL[t]) h += '<span class="ctag">' + SL[t] + '</span>'; });
+  document.getElementById('c-tags').innerHTML = h;
+  document.getElementById('counter').style.display = 'flex';
+}
+
+function generate() {
+  var tags = getTags();
+  if (!tags.length) { alert('Please select at least a stage of engagement.'); return; }
+  AQ = QB.filter(function(q) {
+    return q.tags.some(function(t) { return tags.indexOf(t) >= 0; });
+  }).map(function(q) {
+    var mt = q.tags.find(function(t) { return tags.indexOf(t) >= 0; }) || q.tags[0];
+    return { id: q.id, t: q.t, s: q.s, g: q.g, c: q.c, txt: q.t, active: true, mt: mt, status: 'unanswered' };
+  });
+  renderReview();
+  show('review');
+}
+
+function renderReview() {
+  var active = AQ.filter(function(q) { return q.active; });
+  var secs = {};
+  active.forEach(function(q) { if (!secs[q.s]) secs[q.s] = []; secs[q.s].push(q); });
+  var crit = active.filter(function(q) { return q.c; }).length;
+  var ans = active.filter(function(q) { return q.status === 'answered' || q.status === 'na'; }).length;
+
+  document.getElementById('sbar').innerHTML =
+    '<div class="sbar">' +
+    '<div class="si"><strong>' + active.length + '</strong>total</div>' +
+    '<div class="si"><strong>' + crit + '</strong>critical</div>' +
+    '<div class="si"><strong>' + ans + '</strong>already answered</div>' +
+    '<div class="si"><strong>' + (active.length - ans) + '</strong>to send</div>' +
+    '<div class="si" style="font-size:12px;color:rgba(255,255,255,0.3);align-self:center">Coloured badge = why it was included</div>' +
+    '</div>';
+
+  var container = document.getElementById('qlist');
+  container.innerHTML = '';
+  var n = 1;
+
+  Object.keys(secs).forEach(function(secName) {
+    var qs = secs[secName];
+    var secDiv = document.createElement('div');
+    secDiv.className = 'card';
+    secDiv.innerHTML = '<div class="shdr">' + secName + '<span>' + qs.length + ' questions</span></div>';
+
+    qs.forEach(function(q) {
+      var srcLbl = SL[q.mt] || q.mt;
+      var srcCls = SC[q.mt] || 's-always';
+      var item = document.createElement('div');
+      item.className = 'qi';
+      item.style.opacity = (q.status === 'answered' || q.status === 'na') ? '0.4' : '1';
+
+      var top = document.createElement('div');
+      top.className = 'qi-top';
+      var numDiv = document.createElement('div');
+      numDiv.className = 'qn';
+      numDiv.textContent = n++;
+      var body = document.createElement('div');
+      body.className = 'qb';
+      var ta = document.createElement('textarea');
+      ta.className = 'qt';
+      ta.rows = 2;
+      ta.value = q.txt;
+      (function(qRef) { ta.addEventListener('change', function() { qRef.txt = this.value; }); })(q);
+      var meta = document.createElement('div');
+      meta.className = 'qm';
+      meta.innerHTML = '<span class="qgate">' + q.g + '</span><span class="qsrc ' + srcCls + '">' + srcLbl + '</span>' + (q.c ? '<span class="qcrit">● Critical</span>' : '');
+      body.appendChild(ta);
+      body.appendChild(meta);
+      var rmBtn = document.createElement('button');
+      rmBtn.className = 'qrm';
+      rmBtn.textContent = '×';
+      (function(qRef) { rmBtn.addEventListener('click', function() { qRef.active = false; renderReview(); }); })(q);
+      top.appendChild(numDiv);
+      top.appendChild(body);
+      top.appendChild(rmBtn);
+      item.appendChild(top);
+
+      var extra = document.createElement('div');
+      extra.className = 'qi-extra';
+      var sf = document.createElement('div');
+      sf.className = 'qi-field';
+      sf.innerHTML = '<label>Status</label>';
+      var sel = document.createElement('select');
+      sel.innerHTML =
+        '<option value="unanswered">Not yet answered — include in send</option>' +
+        '<option value="partial">Partially known — include in send</option>' +
+        '<option value="answered">Already answered — exclude from send</option>' +
+        '<option value="na">Not applicable — exclude from send</option>';
+      sel.value = q.status;
+      (function(qRef, itemEl) {
+        sel.addEventListener('change', function() {
+          qRef.status = this.value;
+          itemEl.style.opacity = (this.value === 'answered' || this.value === 'na') ? '0.4' : '1';
+          updateSbar();
+        });
+      })(q, item);
+      sf.appendChild(sel);
+      extra.appendChild(sf);
+      item.appendChild(extra);
+      secDiv.appendChild(item);
+    });
+
+    var addRow = document.createElement('div');
+    addRow.className = 'addrow';
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'addinp';
+    inp.placeholder = '+ Add a custom question for this section...';
+    var addBtn = document.createElement('button');
+    addBtn.className = 'btn';
+    addBtn.style.cssText = 'padding:8px 14px;font-size:13px';
+    addBtn.textContent = 'Add';
+    (function(sec) {
+      function doAdd() {
+        var txt = inp.value.trim();
+        if (!txt) return;
+        AQ.push({ id: 'c' + Date.now(), s: sec, g: 'Custom', c: false, txt: txt, active: true, mt: 'always', status: 'unanswered' });
+        inp.value = '';
+        renderReview();
+      }
+      addBtn.addEventListener('click', doAdd);
+      inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') doAdd(); });
+    })(secName);
+    addRow.appendChild(inp);
+    addRow.appendChild(addBtn);
+    secDiv.appendChild(addRow);
+    container.appendChild(secDiv);
+  });
+}
+
+function updateSbar() {
+  var active = AQ.filter(function(q) { return q.active; });
+  var ans = active.filter(function(q) { return q.status === 'answered' || q.status === 'na'; }).length;
+  var si = document.querySelectorAll('#sbar .si strong');
+  if (si[2]) si[2].textContent = ans;
+  if (si[3]) si[3].textContent = active.length - ans;
+}
+
+function buildExport() {
+  var name = P.name || 'Retailer';
+  var toSend = AQ.filter(function(q) { return q.active && q.status !== 'answered' && q.status !== 'na'; });
+  var excl = AQ.filter(function(q) { return q.active && (q.status === 'answered' || q.status === 'na'); });
+  var secs = {};
+  toSend.forEach(function(q) { if (!secs[q.s]) secs[q.s] = []; secs[q.s].push(q); });
+  var mp = [];
+  if (P.vertical) mp.push(P.vertical);
+  if (P.geo) mp.push(P.geo);
+  mp.push(new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'}));
+
+  var h = '<div class="expwrap">';
+  h += '<div class="exp-logo">Barrows Connected Store</div>';
+  h += '<div class="exp-title">Retailer Questionnaire</div>';
+  h += '<div class="exp-sub">Prepared for: <strong>' + name + '</strong> &nbsp;·&nbsp; ' + mp.join(' · ') + '</div>';
+  h += '<div class="exp-div"></div>';
+  h += '<div class="exp-intro">We have put together a short set of questions to help us understand your setup and make sure we design the right programme for your business. There are no wrong answers — just tell us what you know and flag anything you are not sure about. Most people get through this in about 30 minutes. Please send your answers back to your BCS contact whenever you are ready.</div>';
+
+  var n = 1;
+  Object.keys(secs).forEach(function(sec) {
+    h += '<div class="exp-sec">' + sec + '</div>';
+    secs[sec].forEach(function(q) {
+      h += '<div class="exp-q"><span class="exp-qn">' + n++ + '.</span><div>' + q.txt + '<div class="exp-ans"></div></div></div>';
+    });
+  });
+
+  if (excl.length) {
+    h += '<div class="exp-ref"><div class="exp-ref-title">Internal reference — already answered, not sent to retailer</div>';
+    excl.forEach(function(q) {
+      h += '<div class="exp-ref-q"><span class="exp-ref-badge">' + q.g + '</span>' + q.txt + '</div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+  document.getElementById('expbody').innerHTML = h;
+}
+
+function dlCSV() {
+  var name = P.name || 'Retailer';
+  var toSend = AQ.filter(function(q) { return q.active && q.status !== 'answered' && q.status !== 'na'; });
+  var excl = AQ.filter(function(q) { return q.active && (q.status === 'answered' || q.status === 'na'); });
+  var secs = {};
+  toSend.forEach(function(q) { if (!secs[q.s]) secs[q.s] = []; secs[q.s].push(q); });
+  var rows = [['#','Section','Question','Gate','Critical','Answer']];
+  var n = 1;
+  Object.keys(secs).forEach(function(sec) {
+    secs[sec].forEach(function(q) { rows.push([n++, sec, q.txt, q.g, q.c ? 'Critical' : '', '']); });
+  });
+  if (excl.length) {
+    rows.push(['','','','','','']);
+    rows.push(['','ALREADY ANSWERED — internal reference only','','','','']);
+    excl.forEach(function(q) { rows.push(['', q.s, q.txt, q.g, q.c ? 'Critical' : '', q.status]); });
+  }
+  var NL = String.fromCharCode(10); var CR = String.fromCharCode(13);
+  var csv = rows.map(function(row) {
+    return row.map(function(cell) {
+      var s = String(cell === null || cell === undefined ? '' : cell);
+      if (s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf(NL) >= 0 || s.indexOf(CR) >= 0) s = '"' + s.split('"').join('""') + '"';
+      return s;
+    }).join(',');
+  }).join(CR + NL);
+  var blob = new Blob([String.fromCharCode(0xFEFF) + csv], {type: 'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'BCS_Questionnaire_' + name.split(' ').join('_') + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+}
+
+function show(name) {
+  document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('s-' + name).classList.add('active');
+  var steps = {profile: 1, review: 2, export: 3};
+  var n = steps[name];
+  document.getElementById('prog').style.width = (n * 33) + '%';
+  ['ps1','ps2','ps3'].forEach(function(id, i) {
+    var el = document.getElementById(id);
+    el.className = 'prog-step' + (i + 1 < n ? ' done' : i + 1 === n ? ' act' : '');
+  });
+  if (name === 'export') buildExport();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.pills').forEach(function(group) {
+  group.querySelectorAll('.pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      group.querySelectorAll('.pill').forEach(function(p) { p.classList.remove('on'); });
+      pill.classList.add('on');
+      P[group.dataset.key] = pill.dataset.val;
+      updateCounter();
+    });
+  });
+});
+
+document.getElementById('p-name').addEventListener('input', function() { P.name = this.value; });
+document.getElementById('btn-generate').addEventListener('click', function() { generate(); });
+document.getElementById('btn-back1').addEventListener('click', function() { show('profile'); });
+document.getElementById('btn-toexport').addEventListener('click', function() { show('export'); });
+document.getElementById('btn-back2').addEventListener('click', function() { show('review'); });
+document.getElementById('btn-csv').addEventListener('click', function() { dlCSV(); });
+</script>
+</body>
+</html>
